@@ -9,7 +9,7 @@ namespace AspApp.Areas.ReportEditor.Models
         public int? Id { get; set; }
         public List<SelectListItem> DocumentList { get; set; } = new();
         public int SelectedReportId { get; set; }
-        public AspAppUser User { get; set; } = new AnonymousAppUser();
+        public AspAppUser? User { get; set; } = null;
 
     }
 }

@@ -1,0 +1,152 @@
+﻿body {
+    font-family: 'Segoe UI';
+    width: 90%;
+}
+
+report-document {
+    display: block;
+    width: 100%;
+    background-color: white;
+    border: 1px black solid;
+    margin-top: 1em;
+    padding: 1.5em;
+}
+
+.main-heading {
+    text-align: center;
+}
+#controls {
+    position: sticky;
+    padding: 1.5em;
+    bottom: 0;
+}
+
+report-document > *:hover {
+    background-color: antiquewhite;
+}
+report-index div > ul, report-index div li{
+    list-style-type:none;
+    width : 100%;
+    min-height : 2em;
+    cursor : pointer;
+}
+
+
+li span.dotted-line {
+    width: 100%;
+    border-bottom: 1px dotted #000;
+}
+
+li a {
+    color : inherit;
+    font-style : inherit;
+    text-decoration : inherit;
+}
+report-content {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.report-section-1 {
+    min-width: 250px;
+    min-height: 1em;
+}
+
+
+report-heading {
+    display:block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.cover-p {
+   width: 100%;
+   text-align: center;
+   margin-top: 2em;
+   margin-bottom : 2em;
+}
+.report-p {
+    min-height: 1em;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+
+.btn-add-section {
+    background-color: lightgray;
+}
+
+.btn-add-paragraph {
+    background-color: lightgray;
+}
+
+.btn-sec-levelup {
+    background-color: lightgray;
+}
+
+img-container {
+    display: block;
+    width: 90%;
+    margin: auto;
+}
+
+.re-small {
+        width: 50%;
+        margin: auto;
+    }
+
+.re-mini {
+    width: 30%;
+    margin: auto;
+}
+
+img-label {
+    display: block;
+    margin: auto;
+    margin-bottom: 0.8em;
+    text-align: center;
+}
+
+image-box {
+    display: block;
+    margin: auto;
+    width: 90%;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+fieldset {
+    border: 1px solid gray;
+    padding: 0.5em;
+}
+
+@page {
+    size: A4;
+    margin: 1in 0.5in 1in 0.5in;
+
+}
+
+@media print {
+
+    body {
+        width: 100%;
+    }
+
+    header {
+        display: none;
+    }
+    report-document {
+        border: none;
+    }
+    ol.toc a::after {
+        content: leader('.') target-counter(attr(href), page, lower-roman);
+    }
+
+    page-break {
+        display : block;
+        page-break-after: always;
+        min-height: 0.5em;
+        width: 100%;
+    }
+}

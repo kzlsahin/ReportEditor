@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model AspApp.Areas.ReportEditor.Models.EditorPage
+@{
+    ViewData["Title"] = "ReportEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section AdditionalStyles{
+    <link rel="stylesheet" href="/css/ReportDoc.css" />
+    <link rel="stylesheet" href="/lib/prism/prism.css" />
+}
+    @section    AdditionalScripts{
+    <script type="module" src="/js/ReportEditor.js"></script>
+    <script type="module" src="/js/EditorComponents.js"></script>
+    <script src="/js/Download.js"></script>
+    <script src="/lib/prism/prism.js"></script>
+    }
+
+    <div class="d-print-none">
+        <h1>ReportEditor</h1>
+
+        <p>Hi @Model.User.UserName</p>
+
+        <select id="report-selector" class="form-select">
+            <option value="">Pick one</option>
+            @{
+            Model.DocumentList = new();
+            Model.DocumentList.Add(new SelectListItem("Doküman Editör Uygulaması", "1"));
+        }
+        @foreach (SelectListItem item in Model.DocumentList)
+        {
+            <option value=@item.Value>@item.Text</option>
+        }
+    </select>
+</div>
+
+<div id="report" class="d-print-block">
+</div>
+
+
+
+<div id="controls" class="container pt-5 my-2 bg-light d-print-none">
+    <button id="btn-editmode" class="btn btn-primary d-print-none">Edit Mode</button>
+    <button id="btn-download" class="out-edit-mode btn btn-ligh d-print-nonet">download</button>
+    <fieldset class="editor-only d-print-none">
+        <legend>Editor Panel</legend>
+        <button id="btn-save" class="btn btn-success d-print-none">Save</button>
+    </fieldset>
+</div>
+
+
+
+<script>
+    const Report_Content = { author: "@Context.User.Identity.Name", content: "" };
+    function getInnerHtmlOfReport() {
+        Report_Content.content = document.getElementById("report").innerHTML;
+    }
+    function downloadReport() {
+        getInnerHtmlOfReport();
+        downLoadDomDiv(Report_Content.content, "report");
+    }
+</script>
+<script type="module">
+    import { PageLoad, changeEditMode, SaveReport, GetReportDocument } from '/js/ReportEditor.js';
+    window.onload = () => {
+        changeEditMode(true);
+        PageLoad();
+        document.getElementById("btn-editmode").addEventListener("click", () => SaveReport());
+        document.getElementById("btn-download").addEventListener("click", () => downloadReport());
+        document.getElementById("btn-save").addEventListener("click", () => SaveReport());
+        document.getElementById("report-selector").addEventListener("click", (event) => {
+            GetReportDocument(event.target.value);
+        });
+    };
+</script>
+

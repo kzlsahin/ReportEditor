@@ -1,0 +1,512 @@
+<report-document>
+	<h1 class="main-heading">TurkBoy Yazılım Projesi Yeniden Düzenleme Çalışması</h1>
+
+
+	<image-box class="re-small" src="Editor/Images?fileName=TurkBoyScreen.png"></image-box>
+
+	<p class="cover-p re-author" contenteditable="">Hazırlayan: Mustafa Şentürk</p>
+	<p class="cover-p re-date" contenteditable="">23 Mart 2023</p>
+	<p class="cover-p re-company" contenteditable="">Mesh Yazılım ve Mühendislik A.Ş.</p>
+	
+	<page-break></page-break>
+	<h1>İçindekiler</h1>
+	<report-index class="index-list" self-title="content-list" title=""><div><ol class="toc"><li><a href="#rep-heading-0">1. Özet</a></li><li><a href="#rep-heading-1">2. Amaç</a></li><li><a href="#rep-heading-2">3. Kapsam</a></li><li><a href="#rep-heading-3">4. Giriş</a></li><li><a href="#rep-heading-4">5. İhtiyacın Belirlenmesi</a></li><li><a href="#rep-heading-5">6. ClassRules Projesinin Yeniden Düzenlenmesi</a></li><ol class="toc"><li><a href="#rep-heading-6">6.1. Kural Modeli</a></li><li><a href="#rep-heading-7">6.2. Eklenti Mimarisinin Uygulanması</a></li><li><a href="#rep-heading-8">6.3. TL_Rule_Interfaces Sınıfları</a></li><li><a href="#rep-heading-9">6.4. Kural Setinin Tanımlanması</a></li><li><a href="#rep-heading-10">6.5. DSL Tanımları</a></li><li><a href="#rep-heading-11">6.6. Enum Tiplerinin Tanımlanması</a></li><li><a href="#rep-heading-12">6.7. Kural Okuma Mekanizması</a></li><li><a href="#rep-heading-13">6.8. Logger Sınıfının Tanımlanması</a></li></ol><li><a href="#rep-heading-14">7. TurkBoy Projesinin Uyumlaştırılması</a></li><ol class="toc"><li><a href="#rep-heading-15">7.1. Problemin Tanımı</a></li><li><a href="#rep-heading-16">7.2. Kayıt Sisteminin Değiştirilmesi</a></li><li><a href="#rep-heading-17">7.3. İyileştirme Çalışması</a></li></ol><li><a href="#rep-heading-18">8. Dosya Dönüştürücüsünün Geliştirilmesi</a></li><ol class="toc"><li><a href="#rep-heading-19">8.1. Dönüştürücü Programı iç Yapısı</a></li></ol><li><a href="#rep-heading-20">9. Sonuç</a></li></ol></div></report-index>
+
+	<page-break></page-break>
+	<report-heading class="report-heading report-editable" id="rep-heading-0" sec-level="1" heading-text="Özet" editable="true" sec-number="1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-1">3 aylik bir çalışma sonucunda TurkBoy isimli boyutlandırma analizi programının kodlarında mimari ve teknik dönüşüm gerçekleştirilmiştir. 2022 Aralık ayının ikinci yarısında başlayan çalışma, esas itibari ile yeni bir kural setinin sisteme tanımlanması olarak başlamıştır. Ancak Ocak ayının ikinci haftası, Türk Loydu tarafından üzerinde çalışılan kural setinin yeni versiyonunun yayımlanmış olduğu fark edilince, üç haftalık çalışmanın üstü çizilmiş ve yeni kural seti üzerinden çalışma devam etmiştir. Bu üç hafta içinde, önceki sistem üzerinde kural seti geliştirme sürecinde, bazı kodlama örüntüleri fark edilmiş, ihtiyaçlar not edilmiş, eklenti mimarisi için gerekli dönüşüm planlanmıştı. Üç hafta sonrasında başlayan yeni çalışma ile hızla aksiyon alınarak yeni bir kural modeli tasarlanmış, kural tanımlama sürecini hızlandırmak ve basitleştirmeye yönelik basitçe bir dil tasarlanmış, eklenti mimarisine yönelik projelerde yeniden düzenlemeler yapılmış, sistem üzerinde bir Logger tassarlanmış ve ardından TurkBoy isimli ana projede de adaptasyon çalışmaları yapılmıştır. Şubat ayının son iki haftası söz konusu programın versiyon atlamasından kaynaklanan ihtiyaçlara ayrılmıştır. Bu bağlamda da, yeni bir kayıt dosyası formatı, ".tbyx" tanımlanmış ve JSON serileştirme etrafında şekillendirilmiştir. Ardından eski versiyonda kullanıcılar tarafından kaydedilmiş olan ".tby" formatındaki dosyaları yeni formata dönüştürecek bir program geliştirilmiş ve bu program da TurkBoy'a entegre edilmiştir. Bu yapılan dönüşüm neticesinde, kural geliştirme süreci hızlandırılmış ve modüler hale getirilmiştir. Bu sayede, sistem ileride ihtiyaç duyulacak modifikasyonlara açık hale getirilmiştir. Ayrıca, daha önce kural dokümanları ile dijital kural seti arasında muğlak olan ilişki aşikar hale getirilerek dijital ile baskı kurallar arasında karşılaştırılabilirlik elde edilmiştir.</p>
+	<report-heading class="report-heading report-editable" id="rep-heading-1" sec-level="1" heading-text="Amaç" editable="true" sec-number="2. "></report-heading>
+
+	<p contenteditable="" class="report-p" id="rp-2">TurkBoy isimli programın genişletilebilir bir mimariye dönüştürülmesiyle yeni kural setlerinin entegrasyonu için gerekli iş yükünün azaltılması, dijital ortamda geliştirilen kural setlerinin baskı kural dokümanı üzerinden kontrol edilebilir bir formatta hazırlanması, kural setlerinin, henüz ömrünün ilk yıllarında bulunan TurkBoy isimli programın zaman içerisinde ortaya çıkabilecek ihtiyaçlarına cevap verebilecek esnekliğe kavuşturulması hedeflenmiştir.</p>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-2" sec-level="1" heading-text="Kapsam" editable="true" sec-number="3. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-3">
+		Yapılan çalışma, ClassRules isimli proje ile TurkBoy isimli projede değişiklikler yapılması ile
+		yeni bir kural seti olarak Türk Loydu Balıkçı Gemileri kural setinin dijital ortama aktarılmasını kapsamaktadır. Bu çalışmalar:
+	</p>
+	<p class="report-p" contenteditable="" id="rp-4">
+		a) Class_rules isimli projenin eklenti mimarisi etrafında yeniden düzenlenmesi,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-5">
+		b) TurkBoy isimli ana programda ihtiyaç duyulacak düzenlemelerin yapılması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-6">
+		c) yeni bir dosya kayıt sistemi geliştirilmesi ve,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-7">
+		d) eski kayıtları yeni sisteme taşıyacak bir dönüştürücü programın geliştirilmesini içermektedir.
+	</p>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-3" sec-level="1" heading-text="Giriş" editable="true" sec-number="4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-8">
+		Balıkçı gemileri kuralları ile askeri gemilere ait kural setinin TurkBoy isimli programa tanımlanması kapsamı ile başlayan çalışma,
+		söz konusu programda iyileştirmeler yapılmasının gerekli görülmesi üzerine kapsamı genişletilerek mimari dönüşüm çalışması halini almıştır.
+		Yeni kural seti oluşturmak için gerekli olan iş yükünün ağırlığı ve mevcut yapının test edilebilir özelliğinin iyileştirilmesi gerekliliği,
+		programın mevcut yapısının yeni kural setlerinin entegrasyonu sırasında kod tabanının pek çok noktasında değişiklik yapılmasını gerekiyor olması,
+		kod tabanı içerisinde binlerce satır kodun pek çok yerde kendini tekrar ediyor oluşu gibi sebeplerle kod tabanının yenilenmesi yoluna gidilmiştir.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-9">
+		Yeni geliştirilecek kural setlerinin mümkün oldukça ana programda değişiklik yapılmasını gerektirmeyecek şekilde düzenlenmesi,
+		kurallarda yapılacak güncellemelerin tüm program yapısını tekrar derlemeyi gerektirmeden dijitale aktarılabilmesinin ileride ihtiyaç duyulacak iş yükünü ve zaman kaybını azaltacağı
+		değerlendirilmiştir.
+	</p>
+	
+	
+	
+	<p class="report-p" contenteditable="" id="rp-10">
+		kod tabanında şu hususlar tespit edilmiştir:
+	</p>
+	<p class="report-p" contenteditable="" id="rp-11">
+		- Prosedür tabanlı yazılmış olan kural seti sınıfları binlerce satırdan oluşan yekpare yapılardı.
+		Sınıflar içindeki tüm değişkenler "public" olarak belirlenmiş ve sınıf dışından doğrudan ulaşılabilir durumdaydı.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-12">
+		- Ana program ile kural seti sınıfları arasındaki etkileşim (sınıf kontratları) tanımlanmış değildi.
+		Sınıflar içerisinde bulunan 208 değişkenden hangilerinin girdi, hangilerinin çıktı olarak kullanıldığı belirsizdi.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-13">
+		- Sınflar içerisinde bulunan 6 ana metotdun hangi değişkenlere ihtiyaç duyduğu, hangi değişkenleri değiştirdiği belirsizdi.
+		Metotlar üstü kapalı şekilde ilgili değişkenleri kendisi çağırıyor ve satır aralarında sonuçları diğer bazı değişkenlere yazıyordu.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-14">
+		- Class_Rules projesi içinde tanımlanmış olan tipler doğrudan ana program olan TurkBoy projesi tarafından kullanılıyordu.
+		Bu noktada yapılacak değişikliklerin TurkBoy tarafında yansıması olacaktı.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-15">
+		- Ana program ile kural seti sınıfları arasındaki etkileşim (sınıf kontratları) tanımlanmış değildi.
+		Hangi değişkenlerin girdi, hangi değişkenlerin çıktı olarak kullanılacağı belirsizdi. Bunun için kod satırlarının tek tek takip eidlerek değerlendirilmesi gerekliydi.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-16">
+		- Kural seti sınıfları içindeki süreçler çok katmanlı koşul bloklarından oluştuğu için işleyişin takip edilmesi, üzerinde değişiklik yapılması, muhtemel hataların farkedilmesi zordu.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-17">
+		- TurkBoy isimli programın dosya kayıt sistemi ikili rakam sistemine dayanan bir serileştirme yöntemi kullanıyordu. Bu yaklaşımın prototipleme için en etkili sonucu vermesine karşılık,
+		programın yeniden düzenlenmesi sonrasında eski dosya kayıtlarının işlevsiz kalmasına sebep olacaktı.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-18">
+		Ayrıca şu sınır koşulları belirlenmiştir:
+	</p>
+	<p class="report-p" contenteditable="" id="rp-19">
+		- Kural setlerinin benzer yapılara sahip olması bekleniyor olsa da çeşitli kural setlerini içerecek kadar genel tanımlardan oluşmalıdır.</p>
+	<p class="report-p" contenteditable="" id="rp-20">
+		- Uygulama kısmen de olsa yayımlanmış olduğundan, kod tabanında yapılacak değişiklikler, sınıflarda, Açık-Kapalı ilkesine kesinlikle uymalıydı.
+		Sınıflarda yapılacak değişiklikler, sınıflar arası etkileşimi etkilememelidir.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-21">
+		- Kural setleri bağımsız kod öbekleri olarak derlenmeli ve yayınmanmış olan TurkBoy programı tarafından yeniden kurulum gerektirmeden kullanılabilmeliydi.
+	</p>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-4" sec-level="1" heading-text="İhtiyacın Belirlenmesi" editable="true" sec-number="5. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-22">
+		Ön değerlendirme sonucunda tespit edilen problemler ve sınırlamalar ışığında ihtiyaç belirleme çalışması yapılmıştır. Tespit edilen problemlerin en temelinde mevcut kod öbeklerinin arasındaki etkileşimin belirsizliği
+		ve farklı yerlerde karşılaşılan kod tekrarları bulunmakta olduğundan en öncelikli ihtiyacın mümkün olduğunca kod düzenini sağlayacak dönüşümün yapılması olduğu görülmüştür.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-23">
+		Kural setlerini ortak bir yaklaşımla ve kolay anlaşılır bir şekilde geliştirme ihtiyacı duyularak bu kapsamda bir domain dili geliştirilmesi gerektiği düşünülmüştür.
+		Bu tür bir dilin, geliştirme sürecine sağlayacağı kolaylık ve açıklık ile projenin, zaman içinde yüzleşebileceği yeni isterlere cevap verebilecek bir tabana oturtulması açısından bir ihtiyaç olduğu düşünülmüştür.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-24">
+		Kural setlerinin geliştirilmesi sürecinin bir seferde yapılıp sonra tekrar geri dönülmesi gereken bir yapı olmaktan çok sürekli bir geliştirme yaklaşımına ihtiyaç duyduğu,
+		her yeni kural seti yayımlanması ile tüm kural setinin baştan yazılıp ardından tüm programın yeniden derlenmesinin büyük bir iş yükü doğurduğu ve kullanıcıya rahatsız edici bir deneyim sunaduğu gerekçesiyle kural setlerinin eklenti mimarisi şeklinde yeniden kurgulanması ve Class_Rules isimli projenin bu şekilde yeniden düzenlenmesine ihtiyaç duyulmuştur.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-25">
+		Class_Rules projesinin eklenti mimarisi şeklinde yeniden düzenlenmesi, bu projeye sıkı sıkıya bağlı olan
+		ve bu proje içinde tanımlanmış olan tipleri doğrudan kullanan TurkBoy isimli projede de
+		bazı düzenlemeleri mecbur kılacağı anlaşılmıştır. Bu nedenle bu projede referansların ve Class_Rules ile olan ilişkinin bir ara katmana bağlanması gerekli görülmüştür.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-26">
+		TurkBoy isimli programın mevcutta kullanmakta olduğu dosya kayıt sisteminin Binary formatta serileştirmeye dayanıyor olması, eklenti mimarisine geçiş sırasında kod tabanında yapılacak değişim neticesinde eski kayıtlı dosyaların kullanılamaz hale gelmesine sebep olacağından
+		ve Microsoft'un, bu formatın güvenlik açığı oluşturduğu gerekçesiyle, bu tür amaçlarla kullanılmaması gerektiği yönünde uyarısı bulunduğundan,
+		ayrıca ileriki yıllarda gerekli olacak dönüşümler
+		sonrasında aynı sorunların yaşanmaması adına daha esnek bir yöntem olan JSON formatında kayıt alınması gerektiği görülmüştür.
+		Önceki dosya uzantısı ".tby" olup yeni dosya uzantısı ".tbyx" olarak belirlenerek dosya formatları arasında ayrım yapılabilmesi de gerekmektedir.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-27">
+		TurkBoy isimli projenin dosya kayıt sisteminin JSON formatına dönüştürülmesi ileride yaşanacak modifikasyonlarda kayıt sisteminin uyum sağlayabilecek esnekliğe kavuşmasını sağlamasına rağmen,
+		eski kayıtlı dosyaların yeni programda açılmasını sağlamayacağı, bu nedenle bir format dönüştürücüye ihtiyaç duyulduğu anlaşılmıştır. Bu kapsamda, TurkBoy isimli projenin eski dosyalarını hiç değiştirilmeden
+		kullanarak, kayıtlı bir .tby dosyasını önce açarak içe aktaran ve sonra kendi bünyesindeki bir dönüştürücü vasıtasıyla bunu .tbyx formatında yeniden kaydeden bir program geliştirilmesi gerekmiştir.
+	</p>
+
+
+	<p class="report-p" contenteditable="" id="rp-28">
+		Yapılan tespitler neticesinde izlenecek olan adımlar belirlenmiş ve bir plan oluşturulmuştur:
+	</p>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-5" sec-level="1" heading-text="ClassRules Projesinin Yeniden Düzenlenmesi" editable="true" sec-number="6. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-29">
+		Bu sürecin ilk parçasını Class_Rules isimli projenin dönüşüm çalışmaları teşkil etmektedir. Bu çalışmada mevcut kodların haritalandırılması,
+		mevcut yapının işleyişini bozmadan yeni tanımlamaların yapılması,
+		yeni kural setlerinin tanımlanmasını içermektedir.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-30">
+		Yapılan tespitler neticesinde izlenecek olan adımlar belirlenmiş ve bir plan oluşturulmuştur:
+	</p>
+	<p class="report-p" contenteditable="" id="rp-31">
+		- Uygulama ve kural seti kütüphanesi arasındaki ilişkinin belirlenmesi,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-32">
+		- Sınıflar arası etkileşimin kağıt üstünde haritalandırılması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-33">
+		- Genel (public) erişime sahip olan ve diğer sınıflar tarafından kullanılan alanları tanımlanması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-34">
+		- kural sınıflarında hangi metotların "public" olarak tanımlanacağının belirlenmesi,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-35">
+		- Metotlar tarafından kullanılan değişkenlerin metotlara doğrudan parametre olarak aktarılması ve benzer bağlama sahip değişkenlerin gruplandırılması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-36">
+		- Kural seti sınıflarının ortak özelliklerini ve diğer sınıflar ile olan ilişkisini tanımlamak amacıyla sınıf arayüzlerinin (interface) tanımlanması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-37">
+		- Sınıflar arası kod tekrarlarını ortadan kaldırmak amacıyla ortak kullanılan kodların tanımlanacak yeni sınıflara aktarılması ve bu sınıfların miras alınması (inheritence),
+	</p>
+	<p class="report-p" contenteditable="" id="rp-38">
+		- Eklenti mimarisinde döngüsel (circular) bağımlılık oluşturmamak için ortak kullanılan tiplerin (class) başka bir proje içinde paketlenmesi,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-39">
+		- Her bir Kural setinin ayrı proje (assembly) olarak tanımlanması ile tek bir tanrı-sınıf (god-class) yerine alt sınıflardan oluşan moduler bir yapıya dönüştürülmesi,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-40">
+		- Ana programı olan TurkBoy ile Class_Rules içindeki kural setleri arasındaki etkileşimi tanımlayacan bir arayüzün (interface) oluşturulması,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-41">
+		- Kural setlerini dijital ortamda tanımlarken süreci kolaylaştıracak, hata yapma ihtimalini azaltacak,
+		kod okunaklılığını artıracak yardımcı metotları barındıran bir DSL (Domain Specific Language) geliştirilmesi ve Balıkçı Gemileri kural setinin
+		bu dil kullanılarak tanımlanması.
+	</p>
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Kural Modeli" editable="true" sec-number="6.1. " id="rep-heading-6"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-42">Kural dokümanlarının dijital kural setlerine dönüştürüldüğü bir projede en temel yapı taşı kuralın kendisi olacaktır. Bu projede de tüm yapının üzerine inşa edileceği bir kural modelinin eksikliği hissedildiğinden ilk iş bir kural modeli oluşturmak olmuştur. Tüm kural setlerine uygulanabilir en genel hali ile bir kural hangi kısımlardan oluşmalıdır sorusu ile başlayan çalışmamız nihayetinde bir kural modeli ortaya koymuştur. Kural modeline karşılık gelen RuleStatement sınıfı ve bu sınıfın arayüzünü oluşturan IRuleStatement tanımlanmıştır.</p>
+
+	<img-container name="rulestatement" src="Editor/Images?fileName=RuleStatementModel.jpg"></img-container>
+	<img-label for="rulestatement" label-prefix="Şekil " label-number="1. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">RuleStatement - Kural modeli şeması</span>
+	</img-label>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Fonksiyon tanımları" editable="true" sec-number="6.1.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-43">Bir kural tanımı içerisinde en anlaşılır parçalar fonksiyonlardır. Bunlar net bir şekilde tanımlanmış inputlardan bir çıktı elde edilen yapılardır.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Sorgu Tipi" editable="true" sec-number="6.1.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-44">Bu çalışma kapsamındaki kurallar belli başlı kural tiplerinden oluşmaktadır. Bunlar, boyutlandırma kuralları, yükleme durumu kuralları gibi farklı tipte sonuçlar üreten kurallardır.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Kural öznesi tipleri" editable="true" sec-number="6.1.3. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-45">Her kural farklı bir özne tipine sahiptir. Bazı kurallar bir plakayı özne alırken, bazı kurallar destek elemanını bazıları puntelleri özne alabilmektedir. Sorgu öznesi hangi tipte bir elemansa ancak o tipteki elemanları özne olarak alan kuralların okunması gerekeceğinden bu da önemli parçayı teşkil etmektedir.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Genel Kapsam" editable="true" sec-number="6.1.4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-46">Yapısal olarak ön şartlarla aynıdır, aynı şekilde tanımlanır. Sadece kural dokümanında tanımlanan genel kapsam hükümlerinin buradaki yansımasıdır. RuleDoc sınıfı içindeki CheckContext ile oluşturulan bağlamdaki genel verileri input olarak alır ve her kural ilk önce bu gerekliliğe bakar.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Ön Şartları" editable="true" sec-number="6.1.5. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-47">Kuralın ön şartları, sorgu öznesinin söz konusu kuralın kapsamını girip girmediğini belirleyen mantıksal şartlardır. Kural okunmadan önce bu ön şartlar değerlendirilerek sorgu öznesinin bu kuralın kapsamına girip girmediği denetlenir. Eğer kural kapsamına giriyorsa, kuralın metodu okunur.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Kural Metodu" editable="true" sec-number="6.1.6. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-48">Kural metodu kuralın ilgili verileri işleyerek bir sonuç ürettiği ve sorgu çeşidine bağlı olarak bu sonucu okuyucuya işleyen metottur. Sorgu sırasında eğer sorgu öznesi kural kapsamına giriyorsa, sorgu öznesi ve sorguya ait bilgileri taşıyan bir okuyucu bu metoda girer. Metot içerisinde gerekli işlemler yapılır ve okuyucu bu işlem sonuçlarını alarak diğer bir kurala geçer.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Örnek Bir Kural Tanımı" editable="true" sec-number="6.1.7. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-49">Uygulama içerisinde kural tanımlama dilinin, RuleDoc, Articles ve RuleSubject sınıflarının tanımlanmasıyla beraber, kural tanımlama süreci net bir çerçeveye kavuşması sağlanmaktadır. Kural modelinde gösterildiği şekilde fonksiyon tanımları Articles sınıfı içinde, her bir sorguya ait veriler ve sorgu başlatma metotları RuleSubject içinde, Kuralların ana yapısı ve kural listesi de RuleDoc içerisinde tanımlanmaktadır. RuleDoc kural listesine eklenecek olan kurallar RuleDoc.AddRules isimli "abstract" metodun içinde tanımlanır ve RuleDoc sınıfı nesnesi oluşturulurken bu metot çağrılarak RuleDoc içindeki kural listesi doldurulmuş olur. Bu kural tanımı, kurala ilişkin referansları, hangi elemanları kapsadığı, hangi kural/sorgu tipine ait olduğu ve hangi şartlarda uygulanabilir olduğu ile kuralın metodundan oluşur (bakınız 6.5.2).</p>
+	<p class="report-p" contenteditable="" id="rp-50">Aşağıdaki örnek, RuleDoc içinde bir kural tanımına aittir. Burada kullanılan ForMembers, OfType, When, WillDo metotları ile bu kuralın hangi eleman tiplerini kapsadığı, hangi sorgu tipinden olduğu, hangi şartlarda okunacağı ve kuralın ana metodu tanımlanmaktadır. Bu örnek fikir vermesi amacıyla paylaşılmış olup kodun anlaşılabilmesi için gerekli açıklamalar ilerleyen bölümlerde yapılacaktır. </p>
+
+	<img-container name="adding-rule" src="Editor/Images?fileName=AddingRule.png"></img-container>
+	<img-label for="adding-rule" label-prefix="Şekil " label-number="2. " editable="true" class="editable">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Örnek bir kural tanımı</span>
+	</img-label>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-7" sec-level="2" heading-text="Eklenti Mimarisinin Uygulanması" editable="true" sec-number="6.2. "></report-heading>
+
+	<p class="report-p" contenteditable="" id="rp-51">
+		Eklenti mimarisi (add-in architecture), yazılımda önceliğinizin genişletilebilirlik olduğu durumlarda başvurulan mimari yapıdır.
+		Bu projenin kullanım şekli yeni kural setlerininin düzenli olarak derc edilmesi ve mevcut kural setlerinin zaman zaman revize edilmesini,
+		ve bazen de tespit edilen sorunların giderilerek mevcut kural setlerinin yenilenmesini gerektirdiğinden, kullanıcıya sürekli yeni bir program yükletmek yerine,
+		belki farkında bile olmadan güncellemeler yoluyla bu değişikliklerin yapılmasını sağlayacak böylesi bir yapının kurulması en doğru yaklaşım olacaktır.
+	</p>
+	<img-container name="MS-addin" src="Editor/Images?fileName=MS.Add-In.jpg"></img-container>
+	<img-label for="MS-adin" label-prefix="Şekil " label-number="3. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Microsoft eklenti mimarisi modeli</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-52">
+		.Net Framework içerisinde eklenti mimarisi için hazır bulunan bazı şablonlar ve sınıflar vardır.
+		Ancak bu proje yayınlamlanmış bir programa (TurkBoy) ait olduğundan geriye dönük uyumluluğu mümkün olduğunca korumak öncelikli kaygımızdır.
+		Ayrıca hazır framework kullanımı projeye fazladan bağımlılık ve karmaşa yükleyecektir. Bu nedenle hazır sistem yerine kendi eklenti mimarimizi oluşturduk. Şekil 1'de Microsoft tarafından yayımlanmış olan eklenti mimarisi genel modeli yer almaktadır. Eklenti mimarisinde ev sahibi ana program (host) ile program tarafından dinamik olarak tanınan ve gerektiğinde sisteme yüklenebilen eklentiler vardır. Bunların arasında da birbirilerini tanımaları ve dinamik olarak sisteme yüklenebilmelerini sağlayacak adabtörler ve ortak sınıf tanımları bulunur.
+	</p>
+
+	<img-container name="before-after" src="Editor/Images?fileName=Before-After.jpg"></img-container>
+	<img-label for="before-after" label-prefix="Şekil " label-number="4. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Projemizin önceki assembly yapısı ile Add-in yapısına dönüştürülmesi sonrasındaki assembly yapısı</span>
+	</img-label>
+	<p contenteditable=""></p>
+	<p class="report-p" contenteditable="" id="rp-53">Eklenti mimarisi çerçevesinde ClassRules Projesi (her proje derlendiğinde assembly halini alır) 3 projeye bölünmüş ve her bir kural seti de ayrı birer proje olacak şekilde kurgulanmıştır. Bu kurgunun getirdiği bir zorunluluk olarak, assembly'ler arası karşılıklı referanslaşmanın mümkün olmaması nedeniyle, programın her iki tarafında (kural setleri ve bu setleri kullanan ana program) ortak kullanılacak olan tiplerin ayrı birer assembly halinde tanımlanması gerekmiştir.  Şekil 2 bu dönüşümün şematiğini göstermektedir. Bu bağlamda yeni oluşturulan .Net proje dosyaları şunlardır:</p>
+	<p class="report-p" contenteditable="" id="rp-54">- ClassRules: Doğrudan ana program tarafından kural setlerini yönetmek için kullanılan sınıfların bulunduğu yerdir. Ana program tarafından yapılan seçimlere göre gerekli kural setini yüklemek, ilgili verileri ana programdan kural setine aktarmak, sonuçları da ana programa taşımaktan sorumlu sınıflar burada tanımlanmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-55">- TL_Rule_Interfaces: Kural setlerinin tanımlanmasında kullanılan ortak arayüzler ve sınıf tanımlarının yapıldığı yerdir. Hem klas setleri hem de ana program tarafından bu kural setlerinin tanınmasında kullanılır.</p>
+	<p class="report-p" contenteditable="" id="rp-56">- ClassRules_RefObject: Kural setlerinde ve ana programda kullanılan ortak tiplerin bulunduğu yerdir. Support, Plate, Stress gibi tanımlar bu projeye taşınmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-57">Bunlarında dışında eklentileri bulmak ve yüklemekten sorumlu PluginManager projesi tanımlanmıştır. Buna ait assembly ClassRules tarafından gerekli kural setini içeri aktarmakta kullanılır.</p>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-8" sec-level="2" heading-text="TL_Rule_Interfaces Sınıfları" editable="true" sec-number="6.3. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-58">Bu projede kural setlerinin tanımlanmasında gerekli olan ve kural setleri tarafından ortak kullanılan sınıflar, delegate, enum ve static metotlar bulunmaktadır. Bunların arasında Logger sınıfı, kural tanımlarında kullanılan yardımcı metotlar, kuralların arayüzleri, RuleReader sınıfı, RuleSubject sınıfı tanımları bulunmaktadır.</p>
+	<img-container name="ruleset-interface-arrengmenet" src="Editor/Images?fileName=TL_Rules_Interfaces.png" class="re-small"></img-container>
+	<img-label for="ruleset-interface-arrengmenet" label-prefix="Şekil " label-number="5. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">TL_Rules_Interfaces projesi dosya yapısı</span>
+	</img-label>
+
+	<report-heading class="report-heading report-editable" id="rep-heading-9" sec-level="2" heading-text="Kural Setinin Tanımlanması" editable="true" sec-number="6.4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-59">
+		Kural Setlerinin dijital ortamda geliştirilmesi sürecinde, iş yükünü azaltmak ve
+		Debugging yapılırken harcanacak süreyi kısaltabilmek amacıyla kural setleri
+		yeniden düzenlenmiştir. Ayrıca yardımcı fonksiyonlardan oluşan bir çeşit
+		temel düzeyde DSL (Domain Specific Language) oluşturulmuştur. Bu sayede kural setini oluşturan sınıflar yönetilmesi daha kolay ufak parçalara bölünmüş, kod tekrarları azaltılmış ve
+		kural dokümanı ile arasındaki bağlantı mümkün olduğunca korunmuştur.
+	</p>
+	<img-container name="ruleset-arrengmenet" src="Editor/Images?fileName=Kural Seti Dosya Düzeni.png" class="re-small"></img-container>
+	<img-label for="ruleset-arrengmenet" label-prefix="Şekil " label-number="6. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true"> Uygulamanın orjinal assembly yapısı ve Add-in yapısına dönüşümünün assembly diagramları</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-60">
+		Kural seti bir klas kuralı dokümanının dijital ortamda (Turk Boy için) yeniden
+		tanımlanmış halidir. Eklenti mimarisinin bir parçası olarak her bir kural seti
+		başlı başına bir assembly olarak derlenecek şekilde düzenlenmiştir. Her bir
+		kural seti başlıca 4 sınıftan ve yardımcı Enum tiplerinden teşkil edilmiştir. Ayrıca bir LoadCreator sınıfı bulunur.
+	</p>
+	<p contenteditable="">
+		1- RuleSubject: Kural seti içindeki tek public sınıftır. Kural setinin ana
+		program ile arasında köprü görevini gören ve kural seti için girdi ve çıktı
+		verilerinin tutulduğu bir zarf görevi gören RuleSubject sınıfı kural setinin ana
+		unsurunu teşkil etmektedir.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-61">
+		2- Articles: Kural setinin statik sınıfıdır. Burası kural dokümanında tanımlı
+		olan matematiksel ve mantıksal fonksiyonların statik olarak tanımlandıkları
+		yerdir. Burada tanımlı fonksiyonlar yalıtılmıştır ve bu fonksiyonları kullanacak
+		olan kodların gerekli girdileri fonksiyonlara sağlaması gerekir. Bu sayede
+		gereklilikler hiyerarşisi oluşturulmuş ve veri akışı nispeten görünür hale
+		getirilmiştir.
+	</p>
+
+	<p class="report-p" contenteditable="" id="rp-62">
+		3- RuleDoc: Kuralların tanımlandığı dokümandır. Ana program tarafından
+		gelen isteklere göre kuralların okunup yorumlandığı yer de burasıdır.
+	</p>
+
+	<p class="report-p" contenteditable="" id="rp-63">
+		4- Enum Tipleri: PositionCode gibi çoktan seçmeli değişkenler önceden
+		string olarak tanımlanmışlardı. Bu durum yeni bir değişken tanımlamak veya
+		var olan bir değişkenin isminde yenilik yapmayı zorlaştırıyordu. Ancak
+		özellikle bir değişkeni kod içerisinde farklı yerlerde kullanırken imla hatasına
+		bağlı problemlerin ortaya çıkması çok olası bir durumdu. Bu nedenle bu
+		değişkenler enumlar olarak tanımlanmışlardır.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-64">
+		5- LoadCreator: Bu sınıf Extension tipi, AddLoad isimli bir metot içermektedir. Bu metot yoluyla, LoadTypes isimli enum içinde tanımlanmış olan yük tiplerine göre yük nesnesi oluşturur ve bu nesneyi yük listesine ekler. Bu sayede her bir yük tipi için nasıl bir yük nesnesi oluşturulacağı içinde hangi değerler bulunacağı tek bir noktadan kontrol edilebilmekte ve kural seti tarafında tanımlanmaktadır. Bu yük nesneleri, yük analizi sonucunda hesaplanan yüklerin değeri ile bu yüklere ait ilgili kuralın doküman referansı gibi meta veriyi içerir.
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="3" heading-text="RuleSubject Sınıfı Oluşturulması" editable="true" sec-number="6.4.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-65">
+		RuleSubject sınıfı IRuleSubject,;IRuleSubjectInput, IRuleSubjectResult,
+		INavyRuleAddition olarak dört interface'e sahiptir. Bu sınıfın public olması ve
+		tüm kural setlerinin ortak bir arayüzle tek bir kural seti gibi ana programdan
+		çağrılabilmesi için bu interface'ler tanımlanmıştır.
+	</p>
+	<img-container name="rulesubject-arrengmenet" src="Editor/Images?fileName=RuleSubjectClassStructureEx.png" class="re-small"></img-container>
+	<img-label for="rulesubject-arrengmenet" label-prefix="Şekil " label-number="7. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Örnek bir RuleSubject yapısı</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-66">
+		IRuleSubject interface'i içerisinde şu 9 metot bulunmaktadır. Yeni bir kural
+		seti tanımlanırken bu metotların RuleSubject içerisinde tanımlanması gerekir. Bu metotların ilk altı tanesi analiz sürecini başlatarak sonuçları alan metotlardır. Bunlar bir RuleReader nesnesi oluşturur, okunacak olan kural setini, hangi tip analizin yapılacağını, ve hangi loglayıcının kullanılacağı bilgisini bu RuleReader nesnesine aktarır ve arından RuleReader'a ait ReadRule() metodunu çağırır.
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="LoadGenerator()" editable="true" sec-number="6.4.1.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-67">
+		Bu metot RuleDoc içerisinde tanımlanmış olan kural setlerinden yük hesabı
+		ile ilgili olanların okunarak analiz edilmesi sürecini başlatır ve sonunda yük bilgisini sonuç verisini kaydeder.
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="HullGirderLoadsCalculation()" editable="true" sec-number="6.4.1.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-68">Bu  metot RuleDoc içerisinde boyuna mukavemet yükleri ile ilgili kuralların okunup analiz edilmesi sürecini başlatır ve sonuçları kaydeder.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="HullGirderMemberStressCalculation()" sec-number="6.4.1.3. " editable="true"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-69">
+		Bu metot boyuna mukavemet yükleri neticesinde gemi üzerinde oluşan
+		gerilmeleri hesaplayarak sonuç değişkenlerine set edecek süreci başlatır.
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="HullGirderSectionModulusCalculation()" editable="true" sec-number="6.4.1.4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-70">
+		Bu metot geminin kesit modülünü hesaplayarak sonuç değişkenlerine set
+		eden metottur..
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="PlateMembers()" editable="true" sec-number="6.4.1.5. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-71">
+		Bu metot sac plakaların RuleDoc içerisinde tanımlanmış scantling kurallarına
+		göre analiz edilmesi ve sonucunda elde edilen sonuçları ilgili değişkenlere set
+		edilmesi sürecini başlatır.
+	</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="SupportMembers()" editable="true" sec-number="6.4.1.6. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-72">
+		Bu metot posta, kemere gibi destek elemanlarının RuleDoc içerisinde
+		tanımlanmış olan scantling kurallarına göre analiz ederek sonuçların ilgili sonuç
+		değişkenlerine set edilmesi sürecini başlatır.
+	</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="PuntelMembers()" editable="true" sec-number="6.4.1.7. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-73">Bu metot puntel tipi elemanlarının analizini başlatan metottur. </p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="AssignInputVariables(RuleSubject parent)" editable="true" sec-number="6.4.1.8. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-74">Bu metot ile ana programdan aktarılan veriler kendisi de bir RuleSubject tipi nesne olan Rules nesnesi üzerinden ilgili RuleSubject nesnesine ulaştırılır. Bu metot esas olarak, herhangi bir analiz metodu çağrılmadan önce, RuleSubject nesnesinde tanımlı olan her bir değişkeni parent nesnesinden kendisine kopyalamaktadır.</p>
+	<report-heading class="report-heading report-editable" id="" sec-level="4" heading-text="AssignResultVariables(RuleSubject parent)" editable="true" sec-number="6.4.1.9. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-75">Analiz metotları sonucunda sonuç değişkenlerine ait değerleri parent nesnesine kopyalar. Böylece parent nesnesi aracılığıyla sonuçlar ana programa taşınmış olur.</p>
+
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="RuleReader : IDisposable" editable="true" sec-number="6.4.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-76">RuleReader nesnesi yukarıda bahsi geçen metotlar tarafından kullanılmakta olduğundan burada izah edilmesi gerekmiştir. Dependency Injection yaklaşımı kullanılarak,tanımlanmış olan kuralların okunmasında gerekli olan değişkenler bu nesne vasıtasıyla  RuleDoc içine aktarılır.</p>
+	<img-container name="rulereader-arrengmenet" src="Editor/Images?fileName=RuleReaderClassStructureEx.png" class="re-small"></img-container>
+	<img-label for="rulereader-arrengmenet" label-number="8. " label-prefix="Şekil " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">RuleReader sınıfının iç yapısı</span>
+	</img-label>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="ReadRules()" editable="true" sec-number="6.4.2.1. "></report-heading>
+
+	<p class="report-p" contenteditable="" id="rp-77">Okunacak olan RuleDoc nesnesinin StartReading metodunu çağırır. Bu metoda kendisini paremetre olarak enjekte ederek RuleDoc'un okuma yaparken analiz edilecek olan özneye ait verilerin RuleDoc tarafından görülebilmesini sağlar.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="Constructor" editable="true" sec-number="6.4.2.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-78">Constructor parametreleri 5 adet nesneden oluşmaktadır:</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="RuleSubject ruleSubject:" sec-number="6.4.2.3. " editable="true"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-79">Analize ait öznel verileri içeren bir konteynerdir. RuleReader nesnesi oluşturup kendisini ve diğer gerekli nesneleri içine enjekte eden ve RuleReader'ın ReadRules() metodunu çağırarak analizi başlatan nesnedir. Ana programla kural seti arasında köprü rolündedir.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="Enum memberTypes:" editable="true" sec-number="6.4.2.4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-80">
+		Analiz edilecek olan öznenin tipini belirleyen çoktan seçmeli bir parametredir. Kural okuyucu kuralları okurken bunu dikkate alır. Değerleri kural seti tarafından tanımlanır. Ancak esas olarak <span style="background-color: rgb(255, 255, 255);">Plate, Support, MainSupport, Puntel ve None değerlerinden oluşur.</span>
+	</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="Enum comp:" editable="true" sec-number="6.4.2.5. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-81">Kompartman tiplerine karşılık gelen bir çok seçmeli parametredir. Alabileceği değerler kural seti tarafından tanımlanmaktadır. O kural seti kapsamında hangi kompartmanların tanımlı olduğunu belirler.</p>
+
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="RuleTypes ruleTypes:" editable="true" sec-number="6.4.2.6. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-82">Bu da Enum tipinde çoktan seçmeli bir değişken olup değerleri TL_Rules_Interfaces içerisinde tanımlanmıştır. Kural Seti içinde hangi çeşit kurallarının tanımlanabileceğini belirler. Bu değişken RuleReader'a hangi tipte kural okuması yapacağını bildirir. MemberLoad, HullGirderLoad, HullGirderSectionLoad, HullGirderMemberStress, Scantling değerlerinden birini alır. Bu değerler de RuleSubject sınıfı içerisinde yer alan ve ana program tarafından çağrılan metotlara karşılık gelirler.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="ILogger logger:" sec-number="6.4.2.7. " editable="true"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-83">Program içerisinde vuku bulan istisnai durumları ve belli aşamaları bir dış kaynağa örneğin bir dosyaya kaydederek program işleyişinin takip edilebilmesini sağlayan ve RuleSubject nesnesine ait olan logger nesnesi, bu yolla RuleReader'a ve onun vasıtasıyla da RuleDoc içerisine enjekte edilir.</p>
+	<report-heading class="report-heading report-editable" heading-text="Articles Sınıfının tanımlanması" sec-level="3" id="rep" editable="true" sec-number="6.4.3. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-84">Bu bir statik sınıf olup yalnızca statik metotlardan oluşmaktadır. Kural dokümanlarında yer alan fonksiyonların kural setinde tanımlandıkları yer burasıdır. Böylece kural dokümanlarındaki referanslara göre takip edilebilir ve debugging sürecinde kolayca müdahale edilebilir bir yapıya sahip şekilde kural setlerinin en önemli bileşenleri tanımlanmış olurlar.</p>
+	<img-container name="articles-arrangement" src="Editor/Images?fileName=ArticlesClassStructureEx.png" class="re-small"></img-container>
+	<img-label for="articles-arrangement" label-number="9. " label-prefix="Şekil " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Articles sınıfının iç yapısı</span>
+	</img-label>
+
+	<p class="report-p" contenteditable="" id="rp-85">
+		Bu noktada en önemli amaç kural dokümanlarındaki tanımlarla kural seti arasında bağlantının mümkün olduğunca takip edilebilir olmasıdır. Bu sayede kodlarla dokümanlar arasındaki bağlantı aşikar olacağından,
+		geliştirme sürecinde yaşanabilecek sıkıntılar ortadan kalkacak ve bir hata ortaya çıktığında bulmak daha hızlı olacaktır. Bu sınıf içindeki her bir metot tanımlanırken kural dokümanındaki hangi bölümün
+		hangi kuralındaki hangi fonksiyon olduğunu belirtecek işaret ve yorumların eklenmesi önemlidir.
+	</p>
+	<img-container name="article-metot-arrengmenet" src="Editor/Images?fileName=ex-article-metot.png" class="re-small"></img-container>
+	<img-label for="article-metot-arrengmenet" label-number="10. " label-prefix="Şekil " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Örnek bir static metot tanımı</span>
+	</img-label>
+
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="RuleDoc Sınıfının Tanımlanması" editable="true" sec-number="6.4.4. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-86">Kuralların tanımlandığı dokümandır. Okuma isteklerinin gerçekleştiği ortam burasıdır. Kural Dokümanının dijital ortamdaki karşılığıdır. IRuleDoc interface'i ve RuleDocBase sınıfını miras alır. RuleDocBase içerisinde tanımlanmış olan LoadRules ve CheckContext isimli metotlar dışındakiler bağlayıcı niteliktedir ve bir RuleDoc nesnesinin programın kalanı ile tutarlılığını sağlamaktadır. Bu iki metot ise "abstract" olarak tanımlanmış ve ilgili kural dokümanı esas alınarak, kural dokümanının dijital ortamdaki yansıması olan kural seti içerisinde tanımlanacak olak RuleDoc sınıfında tanımlanması gerekmektedir. Bunlarında dışında, ihtiyaç olduğunda yeni bir RuleDoc tanımlanırken buna yeni tanımlar eklenebilir. </p>
+	<p class="report-p" contenteditable="" id="rp-87">TL_Fisher_January_2023'e ait RuleDoc tanımlanırken CheckContext metodu tarafından kullanılacak bir veri konteyneri lazım olmuş ve bunun için sınıf içinde RunContext sınıfı tanımlanmıştır. CheckContext metodu içinde hesaplanan ReinforcementRegions değişkeni bu RunContext içinde kaydediliyor ve buradan da tüm kurallar tarafından erişilebilir halde bulunuyor.</p>
+
+	<img-container name="checkcontext" src="Editor/Images?fileName=CheckContextExample.png"></img-container>
+	<img-label for="checkcontext" label-number="11. " label-prefix="Şekil " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Örnek CheckContext uygulaması.</span>
+	</img-label>
+
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="IRuleDoc" editable="true" sec-number="6.4.4.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-88">IRuleDoc interface'i, isim, açıklama, yayımlanma tarihi ve yürürlüğe giriş tarihi gibi kural dokümanına ait meta data için değişken alanları ile kural listesi ve bir de StartReading() metodu alanlarını rezerve eder.</p>
+	<img-container name="IRuleDoc-structure" src="Editor/Images?fileName=IRuleDocStructure.png" class="re-mini"></img-container>
+	<img-label for="article-metot-arrengmenet" label-number="12. " label-prefix="Şekil " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">IRuleDoc interface yapısı</span>
+	</img-label>
+
+	<p class="report-p" contenteditable="" id="rp-89">IRuleDoc interface'i, isim, açıklama, yayımlanma tarihi ve yürürlüğe giriş tarihi gibi kural dokümanına ait meta data için değişken alanları ile kural listesi ve bir de StartReading() metodu alanlarını rezerve eder.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="RuleDocBase" editable="true" sec-number="6.4.4.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-90">
+		IRuleDoc arayüzüne sahip RuleDocBase sınıfı tüm RuleDoc sınıflarınca ortak kullanılacak alanları ve metotları tanımlayan bir sınıftır. Arayüz'e ek olarak;
+	</p>
+	<p class="report-p" contenteditable="" id="rp-91">
+		AddNewRule: yeni kural eklemek için,
+	</p>
+	<p class="report-p" contenteditable="" id="rp-92"> CheckContext: doküman içindeki tüm kurallar tarafından kullanılacak olan genel bağlamda gerekli olabilecek ön hesapların yapılarak kaydedilebileceği,</p>
+	<p class="report-p" contenteditable="" id="rp-93">
+		AddScantling: kurallar tarafından hesaplar sonucunda bir scantling nesnesi döndürülürken kullanılan,tanımlanmıştır.
+	</p>
+	<p class="report-p" contenteditable="" id="rp-94">
+		Bu tanımlar tüm kural dokümanları için ortak çalıştığından ve ana program tarafından kullanılacak olan sonuç nesnelerinin kurallar arası tutarlılığını sağlayabilmek için bu tanımlar tek bir noktada toplanmıştır. Yeni bir RuleDoc tanımlarken bu noktalara dokunulmayacaktır. CheckContext ve LoadRules isimli metotlar diğerlerinden farklı olarak "abstract" olarak tanımlanmışlardır. Bu metotların içeriği doğrudan kural dokümanındaki kurallarla ilişkili olduğundan, her bir kural seti tanımlanırken o kural setine ait RuleDoc içerisinde bu iki metodun tanımlanması gerekmektedir.
+	</p>
+	<p contenteditable=""></p>
+	<img-container name="ruledocbase" class="re-small" src="Editor/Images?fileName=RuleDocBaseStructure.png"></img-container>
+	<img-label for="ruledocbase" label-prefix="Şekil " label-number="13. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">RuleDocBase sınıf yapısı</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-95">Bu yapı</p>
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="DSL Tanımları" editable="true" sec-number="6.5. " id="rep-heading-10"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-96">
+		<span style="color: rgb(34, 34, 34); font-family: Arial, Tahoma, Helvetica, FreeSans, sans-serif; font-size: 13.2px;">Alana özgü dil olarak tercüme edilebilecek olan DSL'ler (domain specific language), programlamayı daha kolay ve anlaşılır hale getirmek için belirli bir alanda kullanılmak üzere tasarlanmış dil yapılarıdır. Örneğin, SQL bir DSL türüdür. Harici ve dahili olmak üzere iki tür DSL tanımlanır. </span><span style="color: rgb(34, 34, 34); font-family: Arial, Tahoma, Helvetica, FreeSans, sans-serif; font-size: 13.2px;"> DSL, ana diliyle aynı sözdizimine sahipse dahili olarak adlandırılır. </span><span style="color: rgb(34, 34, 34); font-family: Arial, Tahoma, Helvetica, FreeSans, sans-serif; font-size: 13.2px;">Örneğin, SQL kendi sözdizimine sahip harici bir DSL iken, LINQ dahili bir DSL örneğidir. Başka bir deyişle, dahili bir DSL, bir etki alanı için özel olarak oluşturulan türlerin ve yöntemlerin bir kümesidir Sürekli tekrar eden örüntülerin küçük metotlar halinde paketlenmesi şeklinde de kullanılabilen bu diller, hata yapmaya açık ve sürekli tekrar eden noktaların otomatikleştirilmesini sağlayarak ve geliştiricilerin her seferinde üzerine kafa yormaları gerekecek noktaları soyutlayarak daha akıcı bir geliştirici deneyimi sunar. Bu projede de özellikle kural tanımlarında böyle bir dile ihtiyaç duyulmaktadır.</span>
+	</p>
+	<p class="report-p" contenteditable="" id="rp-97">Kural geliştirirken, kural tanımlarında çokça kullanılan belli başlı tanımlar yer almaktadır. Mesela, kuralların çoğunda "şu değerlerden az olamaz" gibi ifadeler çok geçmektedir. Kuralları kodlarken bu tür noktaların hata yapmaya çok açık olduğu görülünce, kodlamanın bir nebze konuşma diline yakınlaştırılmasını sağlayacak, ve bu noktalarda soyutlama sağlayacak metotlar tanımlanmasına ihtiyaç duyulmuştur.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="Logic.cs" editable="true" sec-number="6.5.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-98">Yukarıda bahsedilen örnekteki gibi mantıksal şartların kodlama tarafında da konuşma diline yakın şekilde tanımlanabilmesi için bazı metotlar Logic.cs içerisinde tanımlanmıştır. Bu metotlar şöyledir:</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="AtLeast" editable="true" sec-number="6.5.1.1. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-99">Bu metot döndürülecek değerin girdi değerlerinden az olamayacağını belirtir. Mesela, "kalınlık a, b ve c'den az olamaz" şeklindeki bir ifade "kalınlık = AtLeast(a,b,c)" şeklinde tanımlanabilir. Bu metodun double ve integer tipleri için iki versiyonu tanımlanmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-100">AtLeast(this double value, params double[] limitValues) : Zincirlenebilir şekilde kullanıma uygun olabilmesi için "extension" tipinde tanımlanmıştır. Örnektekini yazacak olursak "kalınlık = AtLeast(a,b).AtLeast(c)" şeklinde de yazabilirdik<span style="color: var(--bs-body-color); font-size: var(--bs-body-font-size); font-weight: var(--bs-body-font-weight); text-align: var(--bs-body-text-align);">.</span></p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="Utmost" editable="true" sec-number="6.5.1.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-101">Bu metot döndürülecek değerin girdi değerlerinden fazla olamayacağını belirtir. Mesela, "kalınlık a, b ve c'den fazla olamaz" şeklindeki bir ifade "kalınlık = Utmost(a,b,c)" şeklinde tanımlanabilir. Bu metodun double ve integer tipleri için iki versiyonu tanımlanmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-102">Utmost(this double value, params double[] limitValues) : Zincirlenebilir şekilde kullanıma uygun olabilmesi için "extension" tipinde tanımlanmıştır. Örnektekini yazacak olursak "kalınlık = Utmost(a,b).Utmost(c) şeklinde de yazabilirdir.</p>
+	<report-heading class="report-heading report-editable" sec-level="4" heading-text="IsAtLeast" editable="true" sec-number="6.5.1.3. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-103">Bu metot bir değerin belirli değerlerden küçük olmadığında "true", küçükse "false" değerlerini döndürür. Mesela, "kalınlık.IsAtleast(a,b,c)" şeklindeki bir kullanım kalınlığın a,b ve c değerlerinden büyük veya eşit olup olmadığına bakar.</p>
+	<p class="report-p" contenteditable="" id="rp-104">IsAtLeast(this int value, params int[] limitValues) : Zincirlenebilir şekilde kullanıma uygun olabilmesi için "extension" tipinde tanımlanmıştır. "t &gt;= [a &amp; b &amp; c] ? true : false" şeklindeki bir ifadeye karşılık gelir.</p>
+	<report-heading class="report-heading report-editable" sec-level="3" heading-text="RuleStatement.cs" editable="true" sec-number="6.5.2. "></report-heading>
+	<p class="report-p" contenteditable="" id="rp-105">Bu dosya kural modeli sınıfı olan RuleStatement sınıfının tanımlandığı dosyadır. Kural tanımlama sürecini daha akışkan hale getirebilmek için bu sınıf içerisinde bazı "extension" tipi metotlar tanımlanmıştır. bu sayede bir kural dokümanının "AddRules" metodu içerisinde: </p>
+	<p class="report-p" contenteditable="" id="rp-106">AddRule( new RuleStatement ).ForMemebers( ).OfType( ) .WithArticleCode( ).WithArticleName( ).WillDo( ).When( )[.And( )]</p>
+	<p class="report-p" contenteditable="" id="rp-107">şeklinde, ara katmanlara girmeye gerek kalmadan tanım yapılabilmektedir. Bu ifadenin dildeki karşılığı şöyle olacakctır:</p>
+	<p class="report-p" contenteditable="" id="rp-108">Add a new rule for ( ) members of type ( ) with article code ( ) with article name ( ) that will do ( ) when (  ) [and ( )]</p>
+	<p class="report-p" contenteditable="" id="rp-109">[ ] içindeki opsiyonel demektir.</p>
+	<img-container name="rule-statement" class="re-small" src="Editor/Images?fileName=RuleStatementClass.png"></img-container>
+	<img-label for="rule-statement" label-prefix="Şekil " label-number="14. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">RuleStatement sınıf yapısı</span>
+	</img-label>
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Enum Tiplerinin Tanımlanması" editable="true" sec-number="6.6. " id="rep-heading-11"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-110">Enum tiplei program içerisinde çoktan seçmeli değişkenler tanımlamaya olanak sağlayan yapılardır. Program içerisinde tanımlı olan kural setlerinde, düz metinler değişken olarak kullanılmış haldeydi. Bunun yol açtığı iki problem vardır. Birincisi, kodlama yapılırken imla hatası yapılabilmesi ve bunun program çıktılarında dikkat çekici bir tutarsızlığa yol açmadıkça farkedilemez oluşudur. Diğeri ise, bir değişkenin ismi değişeceği ve değişkenler üzerinde başka türlü bir düzenleme yapılacağı zaman binlerce satırlık kod üzerinde pek çok yerde değişiklik yapmak gerekmesidir. Bunların önüne geçmesi açısından enum tipi değişkenler çok mühimdir.</p>
+	<img-container name="enumsr" src="Editor/Images?fileName=enums.png" class="re-mini"></img-container>
+	<img-label for="enums" label-prefix="Şekil " label-number="15. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Örnek enum tipleri</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-111">Program içerisinde pek çok enum tipi değişken sınıfı bulunmaktadır. Bu değişkenler aynı zamanda ana programa taşınarak arayüz vasıtasıyla kullanıcıya seçebileceği seçenekler olarak sunulmaktadır. Bunun için enumlardan arayüzlere uygun metin listesi oluşturmakta kullanılan yardımcı metotlar da geliştirilmiş ve EnumHelpers.cs dosyası içinde aynı isimdeki statik bir sınıfta toplanmıştır.</p>
+	
+	
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Kural Okuma Mekanizması" editable="true" sec-number="6.7. " id="rep-heading-12"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-112">Kural okuma süreci ana programdan gelen istek ve gönderilen veri seti üzerine RuleSubject nesnesi tarafından başlatılır. RuleSubject içerisinde mevcut olan 6 çeşit sorgu metodu, karşılık geldikleri sorguyu başlatır. Bunun için bir RuleReader nesnesi oluşturur, kendi referansını ve ilgili bilgileri bu nesne içerisine doldurduktan sonra ilgili RuleDoc sınıfının ReadRules isimli metodunu çağırır ve oluşturmuş olduğu RuleReader tipi nesneyi bu metoda gönderir. RuleDoc, öncelikle tanımlanmış bir context işlemi varsa bunu yerine getirerek bir context oluşturur. Bu context RuleDoc içindeki kurallar tarafından doğrudan erişilebilir durumdadır. Sonrasında, kendi içindeki kural listesinde yer alan her kurala RuleSubject tarafından gelen RuleReader nesnesini ileterek kuralın ReadRule metodunu harekete geçirir.</p>
+	<p class="report-p" contenteditable="" id="rp-113">Aşağıdaki şekilde görüleceği üzere, RuleStatement tipindeki kurallar kendilerine gelen RuleReader tipi nesneyi alarak kendi içerisinde tanımlanmış olan prosesleri işletir ve RuleReader nesnesi üzerinde gerekli değişkenleri ekledikten sonra, diğer kurallar tarafından kullanılmak üzere veya RuleSubject'e geri dönmek üzere bu RuleReader nesnesini geri verir. RuleStatement sınıfının tanımı Kural Modeli başlığı altında anlatılmış olduğundan detaylı bilgi için oraya bakınız.</p>
+	<img-container name="rule-reading" src="Editor/Images?fileName=RuleStatementReading.jpg"></img-container>
+	<img-label for="rule-reading" label-prefix="Şekil " label-number="16. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Kural okuma süreci</span>
+	</img-label>
+
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Logger Sınıfının Tanımlanması" editable="true" sec-number="6.8. " id="rep-heading-13"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-114">Program içerisindeki işleyişin geriye dönük takip edilebilmesi ve olağandışı bir durum ortaya çıktığında teşhis edebilmek için program çalışırken loglama almak kritik önem taşımaktadır. Daha önce kural setlerinin dış ortamda bir loglama mekanizması bulunmadığından sıfırdan bir logger sisteme entegre edilmiştir. Bunun için log dosyası formatı, nerelerde loglama alınacağı ve Logger nesnesinin program içerisinde nasıl taşınacağına karar verilmesi gerekmiştir.</p>
+	<p class="report-p" contenteditable="" id="rp-115">Her klas kuralı kendi Logger nesnesini oluşturarak ana programın assembly dosya konumuna [kural ismi].log.txt şeklinde isimlendirilen bir text dosyasına logları yazdırır. Program yayımlanacağında loglama başka bir dosya konumuna ayarlanması gerekebilir. Şu hali ile geliştirme aşamasında sağladığı kolaylık ön palanda tutulmuştur. Ancak program dosyalarının bulunduğu klasör bu tür dosya yazma ve okuma için kullanılmamalıdır.</p>
+	<img-container name="logger-class" class="re-small" src="Editor/Images?fileName=loggerClass.png"></img-container>
+	<img-label for="logger-class" label-prefix="Şekil " label-number="17. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Kural okuma süreci</span>
+	</img-label>
+
+
+
+	<report-heading class="report-heading report-editable" sec-level="1" heading-text="TurkBoy Projesinin Uyumlaştırılması" editable="true" sec-number="7. " id="rep-heading-14"></report-heading>
+
+	<p class="report-p" contenteditable="" id="rp-116">Kural setlerinin tanımlandığı Class_Rules projesi, ana program olan TurkBoy tarafından doğrudan kullanıldığından Class_Rules tarafında yapılan değişikliklerin bir kısmının TurkBoy tarafında bazı yansımaları olması kaçınılmazdır. Bunların en başında sınıf tanımlarının konumları gelmektedir. Eklenti mimarisine geçildiğinde Class_Rules projesi içerisinde yer alan sınıf tanımlarının bir kısmı kaçınılmaz olarak ClassRules_RefObjects, TL_Rules_Interfaces olmak üzere ayrı projelere taşınmış ve bunun dışında bazı arayüz ve sınıf tanımları da eklenmiş olunca, TurkBoy projesi tabi olarak ihtiyaç duyduğu tanımları artık Class_Rules içerisinde bulamayacaktır.</p>
+	<p class="report-p" contenteditable="" id="rp-117">Bu problemin çözümü, normalde, program içindeki referansları yeni düzene göre değiştirmekten ibaret olacaktı. Ancak, dosya kayıt sisteminin "binary" formatta serileştirme kullanıyor olması sebebiyle, böylesi bir mimari değişiklik daha ciddi başka problemlere yol açacaktır. Bu noktada, sistemin mevcut rijit yapısının eklenti mimarisi önünde bir engel teşkil ettiği anlaşılmış ve başta planlanmış olan görev kapsamının beklenenden daha geniş olacağı görülmüştür. Programın ileride yüzleşeceği yeni ihtiyaçlar ve geliştirmeler göz önüne alındığında eklenti mimarisinin vazgeçilemeyecek önemde bir dönüşüm olduğuna karar verilince, bu problemin tanımı yapılmıştır. Bu tanım üzerinden de TurkBoy dosya kayıt sisteminin dönüşümüne karar verilmiştir.</p>
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Problemin Tanımı" editable="true" sec-number="7.1. " id="rep-heading-15"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-118">TurkBoy dosya kayıt sisteminin "binary" formatta çalışıyor olması programın yapsında yapılacak değişikliklerde daha önce kaydedilmiş olan dosyaların (kullanıcı projeleri) kullanılamaz hale gelmesine yol açmaktadır. Programdaki bu rijitlik, ilerleyen zamanlarda beklenmedik başka problemlere yol açabilecek durumda olduğu değerlendirilmiştir.</p>
+	<p class="report-p" contenteditable="" id="rp-119">Microsoft'un "binary" formatta serileştirme hakkında, ilgili doküman sayfasında yayımlanmış bir uyarısı bulunmaktadır. Bu formatta serileştirilmiş verinin zaafiyet açıklarına sebebiyet verebilecek kadar program içeriğini dışarıya açmakta olduğunu, bu sebeple bu yöntemin yalnızca prıgram içerisinde veri alışverişi dışında kullanılmaması gerektiği, özellikle program içindeki verinin bir dosyaya bu yolla kaydedilmesinin sakıncalı olduğu belirtilmektedir. Bu durum da mevcut dosya kayıt sisteminin değiştirilmesini gerekli kılmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-120">Dosya kayıt sisteminde yapılacak dönüşüm yine de eski kayıtların yeni program versiyonunda açılmasını engelleyecek ve kullanıcı tarafından halihazırda kullanılmakta olan projeleri işlevsiz hale getirecektir. Bu geriye dönük uyumluluk problemi, bu tür tüm programlar için çözülmesi gereken bir problemdir. Bu noktada, programın eski versiyonunu kullanarak eski versiyonda kaydedilmiş proje dosylarını açıp yeni formatta tekrar kaydedecek bir dönüştürücü hazırlanması, bunun içinde programların iç yapısından bağımsız bir dosya formatına ihtiyaç duyulmaktadır. Bunun için JSON dosya formatı ve Newtonsoft JSON serileştirme kütüphanesi tercih edilmiş ve böylece ikinci süreç başlamış olmaktadır.</p>
+
+
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="Kayıt Sisteminin Değiştirilmesi" sec-number="7.2. " editable="true" id="rep-heading-16"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-121">Kayıt sisteminin dönüştürülmesinde yaşanan en büyük sıkıntı verilerin tutulduğu sınıfların aynı zamanda ön yüzde yansıtıldığı ve bu sebeple bazı ek özelliklerle donatılmış olmaları sebebiyle JSON serileştirme yapılamaz durumda olması olmuştur. Bunun için, bu durumdaki 37 adet sınıf için paralel sınıflar tanımlanmış ve bu sınıflar arasında tip dönüştürücüler geliştirilmiştir. Bunun yapılabilmesi için de bazı yardımcı araçlar geliştirilmiştir. Bu araçlar da PropertyCopier, ProxyConverter, SerializerTypeConverter, ve TbyxManager sınıflarıdır.</p>
+	<img-container name="type-map" class="re-small" src="Editor/Images?fileName=TypeMap.png"></img-container>
+	<img-label for="type-map" label-prefix="Şekil " label-number="18. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">Tip haritası</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-122">PropertyCopier, System.Reflection alanındaki yöntemlerden faydalanarak dönüştürülecek tipler arasında aynı isimdeki alanların değerlerini okuyarak bir tipi diğer tipe kopyalamakta kullanılması için geliştirilmiştir. Bu sınıf içerisinde CopyFrom isimli, statik "extension" ve "generic" tipinde tek bir metot tanımlıdır. Bu metot da herhangi bir tipi herhangi bir tipe kopyalayabilecek bir yapıda "generic" olarak tanımlanmıştır. Ayrıca bazı istisnai durumlarda logger üzerinden loglama yapmaktadır.</p>
+	<p class="report-p" contenteditable="" id="rp-123">ProxyConverter tipi, PropertyConverter geliştirilmeden önce paralel tipler tarafından dönüştürücü olarak kullanılmak için yazılmıştır. Tiplerin 33'ü halihazırda bu sınıfı miras almıştır. Bu sınıf, kendisini miras alan tiplere GetOrigin ve ProxyFrom isimli iki adet metot kazandırmış olur. Daha sonra SerializerTypeConverter bu metotları kullanarak dönüşümü gerçekleştirir.</p>
+	<img-container name="property-copier" src="Editor/Images?fileName=PropertyCopier.png"></img-container>
+	<img-label for="property-copier" label-prefix="Şekil " label-number="19. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">PropertyCopier Sınıfı</span>
+	</img-label>
+	<p class="report-p" contenteditable="" id="rp-124">SerializerTypeConverter dönüştürücü sınıfı, Newtonsoft.JsonSerializer tarafından kullanılan tip dönüştürücüsüdür. Serileştirilecek herhangi bir tipi, önce dönüştürücü sınıfına sorup dönüştürülmesi gerekiyorsa bu sınıf aracılığıyla dönüştürüp ardından serileştirmekte kullanılır. </p>
+	<p class="report-p" contenteditable="" id="rp-125">TbyxManager sınıfı TurkBoy programında açık olan model ve ilgili verinin JSON formatında serileştirilerek kaydedilmesi ve kaydedilmiş bir dosyanın ana programda tekrar açılması sürecinden sorumludur.</p>
+	<report-heading class="report-heading report-editable" sec-level="2" heading-text="İyileştirme Çalışması" editable="true" sec-number="7.3. " id="rep-heading-17"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-126">Yapılan çalışma sonunda örnek bir kayıt dosyası yeni formata taşındığında, testler sırasında çıktının okunabilir olması için her verinin bir satıra yerleştirileceği format seçilmiştir. Bu noktada ortaya çıkan dosyanın 125 bin satırdan oluştuğu görülmüş ve dosya kaydetmenin de uzun sürdüğü görülmüştür. Bunun üzerine programdan kayıt alınacağı zaman bir projeye ait hangi verilerin dosyaya aktarılması hangilerinin aktarılmaması gerektiğine dair bir çalışma yapılmıştır. Bu çalışmada program işleyişinde hangi verilerin program açılırken yeniden üretildiği tespiti yapılarak kayıt sırasında ihmal edilebilecek veri tipleri belirlenmiştir. Bu çalışma sırasında kullanılmak üzere, ayrıca bir veri görselleştirme uygulaması prototipi de geliştirilmiştir.</p>
+	<p class="report-p" contenteditable="" id="rp-127">Geometri ile ilgili verilerin her kayıt açılışında yeniden oluşturulduğu farkedilmiş ve EyeShot kütüphanesine ait olan bu tipler kayıt sırasında ihmal edilmiştir. Ancak bunların bir kısmının gerekli olduğu görülünce daha detaylı bir çalışma yapılmış ve gerekli yerlerde bu tipler korunmuştur. Bunlar daha ziyade kesit tanımlarında kullanılan veriler olup, model oluşturulurken referans olarak kullanılmaktadır. Bunun için EyeShot tiplerinden nokta ve vektörel sınıflar olan Point2D, point3D, Point4D sınıflarının paralelleri tanımlanmış, vektörlerin de birer noktaya dönüşebileceği göz önüne alınarak bu paralel sınıflar vektörler için de kullanılmıştır.</p>
+	<p class="report-p" contenteditable="" id="rp-128">Yapılan çalışma neticesinde satır sayısı 170 bin seviyesine çekilebilmiştir.  Bu da kayıt dosyasında %21'lik bir iyileştirme yapılabildiğini göstermiştir. </p>
+
+	<report-heading class="report-heading report-editable" sec-level="1" heading-text="Dosya Dönüştürücüsünün Geliştirilmesi" editable="true" sec-number="8. " id="rep-heading-18"></report-heading>
+	<p class="report-p" contenteditable="" id="rp-129">Kayıt sisteminin değiştirilmesi üzerine eski sistemde kaydedilmiş dosyaların yeni sisteme taşınmasını sağlayacak bir araç geliştirilmesine ihtiyaç duyulmuştur. "Binary" formatta serileştirilmiş verilerden oluşan bu dosyaların tekrar programa aktarılabilmesi için aynı versiyondaki programda açılmaları gerektiğinden, eski versiyonu kullanan bir dönüştürücü uygulaması geliştirilmiştir. Bu uygulama TurkBoy isimli programın önceki sürümünün tümünü referans olarak kendi klasörü içinde bulunduran ve yeni program versiyonundan tamamıyla bağımsız çalışan bir uygulama olması gerektiğinden, dosya dönüşümleri ve serileştirme araçlarının burada tekrar geliştirilmesi gerekmiştir. Esasen, kayıt sisteminin dönüştürülmesi çalışmaları öncelikli olarak bu tarafta başlamış, mevcut kayıtlı dosyalar üzerinde çalışılarak ve test edilerek dosya formatı belirlenmiştir. Daha sonra, TurkBoy'un yeni versiyonunda da benzer süreçler geliştirilmiştir.</p>
+	<p class="report-p" contenteditable="" id="rp-130">Uygulama kendi başına çalıştırılabilecek şekilde tasarlanmış olup bir arayüze de sahiptir. Ancak, TurkBoy'un yeni versiyonu tarafından dış kaynak bir uygulama olarak arka planda çağrılabilecek şekilde hazırlanmıştır. Bu sayede, eski formattaki bir dosya, kullanıcı farkına varmadan yeni formata dönüştürülerek yeni versiyonda açılabilmektedir.</p><report-heading class="report-heading report-editable" sec-level="2" heading-text="Dönüştürücü Programı iç Yapısı" editable="true" sec-number="8.1. " id="rep-heading-19"></report-heading><p class="report-p" contenteditable="" id="rp-135">dsfsdsd</p><report-heading class="report-heading report-editable" sec-level="3" heading-text="ConversionManager" editable="true" sec-number="8.1.1. "></report-heading><p class="report-p" contenteditable="" id="rp-136">sdssdfsdf</p><report-heading class="report-heading report-editable" sec-level="3" heading-text="ProxyConverter" editable="true" sec-number="8.1.2. " id="rep-heading-19"></report-heading><p class="report-p" contenteditable="" id="rp-134">Bla Bla</p><report-heading class="report-heading report-editable" sec-level="3" heading-text="CustomTypeConverter" editable="true" sec-number="8.1.3. " id="rep-heading-20"></report-heading><p class="report-p" contenteditable="" id="rp-137">saasdfdf</p>
+	<img-container name="tby-converter" src="Editor/Images?fileName=TbyConverter.png" class="re-small"></img-container>
+	<img-label for="tby-converter" label-prefix="Şekil " label-number="20. " class="editable" editable="true">
+		<span slot="text" class="editable" editable="true" contenteditable="true">TbyConverter arayüzü</span>
+	</img-label>
+	<report-heading class="report-heading report-editable" sec-level="1" heading-text="Sonuç" editable="true" sec-number="9. " id="rep-heading-20"></report-heading><p class="report-p" contenteditable="" id="rp-131">Söz konusu çalışma neticesinde program üzerinde mimari dönüşüm çalışması yapılarak kural ekleme ve kuralları revize etme yönüyle programa modülerlik kazandırılmış oldu. Geliştirilmiş olan kural modeli ve kural tanımlama yöntemleri vasıtasıyla, yeni kural seti oluşturmak için gerekli olan iş yükünün ağırlığı azaltılmış ve mevcut yapının test edilebilirliği iyileştirilmiş oldu.  Nihayetinde, daha hızlı, daha sağlam, daha esnek bir yapı elde edilmiş oldu.</p><p class="report-p" contenteditable="" id="rp-132">TurkBoy isimli programın dosya kayıt sistemi ileride ihtiyaç duyulabilecek dönüşümlere ayak uydurabilecek şekilde dönüştürülmüş oldu. Yeni kaydedilen dosyaların gerektiğinde doğrudan okunabilir olması, bir problemin tespit edilebilmesini kolaylaştırmaktadır. Sisteme entegre edilen loglama sayesinde problem yaşanabilecek noktalar mümkün olduğunca takip altına alınmıştır.</p><p class="report-p" contenteditable="" id="rp-133">Bu neticenin yanında, kural modeli ve kural tanımlama dili hususunda kazanılan yeni anlayış sayesinde ilerleyen dönemlerde kuralların bir arayüz yoluyla tanımlanabileceği bir modülün geliştirilmesi, elde edilen bakış açısıyla kural geliştirme ve betimleme hususlarında milli imkanlarımızın ve bilincimizin gelişimine katkı sunacak ürünler ortaya koyabilmemizin yolu açılmıştır.</p>
+
+</report-document>

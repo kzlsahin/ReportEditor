@@ -1,0 +1,19 @@
+﻿@using AspApp.Areas.Identity.Data
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model UsersModel
+@{
+    ViewData["Title"] = "users";
+}
+<h1>Users</h1>
+<p>@Model.Message</p>
+<ul>
+    @if (Model.Users != null){
+        foreach (AspAppUser user in Model.Users)
+        {
+            <li>@user.UserName</li>
+        }
+    }
+    
+</ul>

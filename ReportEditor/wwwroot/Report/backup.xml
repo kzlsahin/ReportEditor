@@ -1,0 +1,86 @@
+<section id="cover">
+
+    </section>
+    <section id="cover-Page">
+        <h1>
+            TurkBoy Yazılım Projesi Yeniden Düzenleme Çalışması<wn>Check Title</wn>
+        </h1>
+
+    </section>
+    <section id="content">
+        <h2>
+            İçindekiler
+        </h2>
+    </section>
+    <section id="abstract">
+        <h2>
+            Özet
+        </h2>
+        <p contenteditable="">
+            Ne yapıldı, neden yapıldı, nasıl yapıldı?
+        </p>
+        <p contenteditable="">
+            Yeni işim, mühendislik kural setlerini bir mühendislik uygulamasına entegre etmekti. Uygulama zaten geliştirilmişti ve üç kural seti içeren bir kütüphane ile çalışıyordu. Bu kural setleri, alanın mühendislik analizi için teknik gereksinimleri ve kuralları tanımlayan dokümanlardı. Benim görevim kütüphaneye başka bir kural setini entegre etmekti. Beklenti, yeni dijitalleştirilmiş kural setinde bazı değişiklikler ve ayarlamalar yapmak ve projeye eklemekti. Ancak proje çözümünü açıp kod tabanını gördüğümde ciddi bir zorlukla karşı karşıya olduğumu fark ettim.
+
+Benden mevcut kod tabanına yeni bir kural seti eklemem istenmiş olsa da sorun bundan daha fazlasıydı. fdfsdgsgs</p>
+        <p contenteditable="">
+
+İlk olarak, sadece birkaç sınıf vardı. Bu sınıflar yüksek oranda birbirine bağlıydı ve sadece ortak alanlardan ve izolasyonsuz yöntemlerden oluşuyordu. Kural seti kütüphanesi ile ana uygulama arasındaki etkileşim açık ya da tanımlı değildi.
+</p>
+<p contenteditable="">
+Kural seti sınıfları çok büyüktü; soyut harflerle adlandırılmış 200'den fazla alan ve iç içe geçmiş switch-case'ler ve if-else blokları da dahil olmak üzere binlerce satır koddan oluşan yöntemler, kod ile kural seti dokümanları arasındaki ilişkiyi takip etmeyi imkansız hale getiriyordu.
+        </p>
+    </section>
+    <section id="goal">
+        <h2>
+            Amaç
+        </h2>
+
+    </section>
+    <section id="goal">
+        <h2>
+            Kapsam
+        </h2>
+
+    </section>
+    <section id="introduction">
+        <h2>
+            Giriş
+        </h2>
+        <p contenteditable="">
+            Nerden başladı neden yapıdlı
+        </p>
+    </section>
+    <section>
+        <h2>
+            ClassRules Projesinin Yeniden Düzenlenmesi
+        </h2>
+        <section>
+            <h3>
+                Gerekçesi
+            </h3>
+
+        </section>
+    </section>
+    <section>
+        <h2>
+            TurkBoy Projesinin Yeniden Düzenlenmesi
+        </h2>
+        <section>
+            <h3>
+                Gerekçesi
+            </h3>
+        </section>
+        <section>
+            <h3>
+                Add-In mimarisinin uygulanması
+            </h3>
+
+        </section>
+        <section>
+            <h3>
+                Kayıt Sisteminin Değiştirilmesi
+            </h3>
+
+        </section>
+    </section>

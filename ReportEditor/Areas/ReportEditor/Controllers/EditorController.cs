@@ -12,6 +12,7 @@ using System.Text;
 
 namespace AspApp.Areas.ReportEditor.Controllers
 {
+    [Authorize]
     [Area("ReportEditor")]
     public class EditorController : Controller
     {
@@ -50,7 +51,7 @@ namespace AspApp.Areas.ReportEditor.Controllers
         public  IActionResult Index()
         {            
             var model = new EditorPage();
-            model.User.UserName = User?.Identity?.Name ?? "Anonymous User";
+            model.UserName = User?.Identity?.Name ?? "Anonymous User";
             return View(model);
         }
         [HttpGet]

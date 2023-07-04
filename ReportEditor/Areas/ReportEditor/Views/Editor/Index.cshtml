@@ -19,7 +19,7 @@
     <div class="d-print-none">
         <h1>ReportEditor</h1>
 
-        <p>Hi @Model.User.UserName</p>
+        <p>Hi @Model.UserName</p>
 
         <select id="report-selector" class="form-select">
             <option value="">Pick one</option>
@@ -51,7 +51,7 @@
 
 
 <script>
-    const Report_Content = { author: "@Context.User.Identity.Name", content: "" };
+    const Report_Content = { author: "@(Context.User.Identity?.Name ?? "annonymous")", content: "" };
     function getInnerHtmlOfReport() {
         Report_Content.content = document.getElementById("report").innerHTML;
     }
